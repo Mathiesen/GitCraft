@@ -27,6 +27,10 @@ public class CharacterController : ControllerBase
     [HttpGet("[action]")]
     public IActionResult GetCharacters()
     {
+        var characters = _repository.GetCharacters();
+        if (characters == null)
+            _logger.Log(LogLevel.Error, "Characters not found");
+        
         return Ok(_repository.GetCharacters());
     }
     
