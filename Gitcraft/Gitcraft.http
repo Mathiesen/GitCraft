@@ -1,0 +1,6 @@
+@Gitcraft_HostAddress = http://localhost:5190
+
+POST {{Gitcraft_HostAddress}}/api/character/Create/
+Accept: application/json
+
+###
