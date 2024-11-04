@@ -25,10 +25,6 @@ public class AuthService : IAuthService
         if (user == null)
             return false;
 
-        var hashNSalt = _hashUtil.GenerateHash(password);
-        
-        return CryptographicOperations.FixedTimeEquals(
-            Convert.FromBase64String(hashNSalt.hash),
-            Convert.FromBase64String(user.Hash));
+        return _hashUtil.VerifyHash(password, user.Hash, user.Salt);
     }
 }

@@ -22,4 +22,20 @@ public class HashUtil
         
         return (Convert.ToBase64String(hash), Convert.ToBase64String(salt));
     }
+    
+    public bool VerifyHash(string password, string storedHash, string storedSalt)
+    {
+        var saltBytes = Convert.FromBase64String(storedSalt);
+
+        var hashBytes = Rfc2898DeriveBytes.Pbkdf2(
+            Encoding.UTF8.GetBytes(password),
+            saltBytes,
+            _iterations,
+            _algorithm,
+            _keySize);
+
+        return CryptographicOperations.FixedTimeEquals(
+            hashBytes,
+            Convert.FromBase64String(storedHash));
+    }
 }
