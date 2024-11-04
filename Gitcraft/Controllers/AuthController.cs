@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Gitcraft.Entities;
 using Gitcraft.Services.Interfaces;
 using Gitcraft.Util;
@@ -26,6 +28,7 @@ public class AuthController : ControllerBase
         if (_authService.VerifyLogin(model.Username, model.Password))
         {
             var token = _jwtTokenUtil.GenerateToken(model.Username);
+            
             return Ok(new {token});
         }
         else

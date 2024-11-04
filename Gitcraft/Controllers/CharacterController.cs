@@ -1,6 +1,7 @@
 using Gitcraft.DataAccess.Repository;
 using Gitcraft.DataAccess.Repository.Interfaces;
 using Gitcraft.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gitcraft.Controllers;
@@ -25,6 +26,7 @@ public class CharacterController : ControllerBase
         return Ok();
     }
 
+    [Authorize]
     [HttpGet("[action]")]
     public IActionResult GetCharacters()
     {
@@ -35,6 +37,7 @@ public class CharacterController : ControllerBase
         return Ok(characters);
     }
 
+    [Authorize]
     [HttpGet("[action]")]
     public IActionResult GetCharacter(Guid id)
     {

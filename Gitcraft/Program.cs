@@ -8,6 +8,7 @@ using Gitcraft.Util;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 namespace Gitcraft;
 
@@ -22,7 +23,33 @@ public class Program
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please insert JWT token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "bearer"
+            });
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                        
+                    },
+                    new string[] { "O4iQZDLQrwHQvc5ku2P84gjwpGYnkwNn" }
+                }
+            });
+        });
         builder.Services.AddDbContext<GitCraftContext>(options =>
         {
             options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection"));
@@ -35,7 +62,7 @@ public class Program
 
         builder.Services.AddScoped<JwtTokenUtil>();
 
-        var key = Encoding.ASCII.GetBytes("499ABEC8637A1FD193E8DAE1B6EAE");
+        var key = Encoding.ASCII.GetBytes("O4iQZDLQrwHQvc5ku2P84gjwpGYnkwNn");
         builder.Services.AddAuthentication(
             x =>
             {
