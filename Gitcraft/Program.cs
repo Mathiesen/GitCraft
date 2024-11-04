@@ -1,6 +1,13 @@
+using System.Text;
 using Gitcraft.DataAccess;
 using Gitcraft.DataAccess.Repository;
+using Gitcraft.DataAccess.Repository.Interfaces;
+using Gitcraft.Services;
+using Gitcraft.Services.Interfaces;
+using Gitcraft.Util;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Gitcraft;
 
@@ -20,8 +27,40 @@ public class Program
         {
             options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection"));
         });
+        
         builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        
+        builder.Services.AddScoped<IAuthService, AuthService>();
 
+        builder.Services.AddScoped<JwtTokenUtil>();
+
+        var key = Encoding.ASCII.GetBytes("499ABEC8637A1FD193E8DAE1B6EAE");
+        builder.Services.AddAuthentication(
+            x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+        {
+            x.RequireHttpsMetadata = false;
+            x.SaveToken = true;
+            x.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };
+        });
+        
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(build => build
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin());
+        });
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -32,7 +71,8 @@ public class Program
         }
 
         app.UseHttpsRedirection();
-
+        app.UseCors();
+        app.UseAuthentication();
         app.UseAuthorization();
 
 

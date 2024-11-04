@@ -1,4 +1,5 @@
 using Gitcraft.DataAccess.Repository;
+using Gitcraft.DataAccess.Repository.Interfaces;
 using Gitcraft.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +22,7 @@ public class CharacterController : ControllerBase
     public IActionResult Create(Character character)
     {
         _repository.AddCharacter(character);
-        return Ok("Character created");
+        return Ok();
     }
 
     [HttpGet("[action]")]
@@ -31,7 +32,14 @@ public class CharacterController : ControllerBase
         if (characters == null)
             _logger.Log(LogLevel.Error, "Characters not found");
         
-        return Ok(_repository.GetCharacters());
+        return Ok(characters);
+    }
+
+    [HttpGet("[action]")]
+    public IActionResult GetCharacter(Guid id)
+    {
+        var character = _repository.GetCharacter(id);
+        return Ok(character);
     }
     
 }

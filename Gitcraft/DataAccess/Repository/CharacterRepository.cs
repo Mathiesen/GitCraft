@@ -1,3 +1,4 @@
+using Gitcraft.DataAccess.Repository.Interfaces;
 using Gitcraft.Entities;
 
 namespace Gitcraft.DataAccess.Repository;
@@ -20,5 +21,10 @@ public class CharacterRepository : ICharacterRepository
     public IList<Character> GetCharacters()
     {
         return _context.Characters.ToList();
+    }
+
+    public Character GetCharacter(Guid id)
+    {
+        return _context.Characters.Find(id)!;
     }
 }

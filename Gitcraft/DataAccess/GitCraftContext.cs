@@ -6,6 +6,7 @@ namespace Gitcraft.DataAccess;
 public class GitCraftContext : DbContext
 {
     public DbSet<Character> Characters { get; set; }
+    public DbSet<User> Users { get; set; }
 
     public GitCraftContext(DbContextOptions<GitCraftContext> options) 
         : base(options)
