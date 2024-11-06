@@ -44,5 +44,18 @@ public class CharacterController : ControllerBase
         var character = _repository.GetCharacter(id);
         return Ok(character);
     }
+
+    [HttpGet("[action]")]
+    public IActionResult GetCharacterStats(Guid id)
+    {
+        Character character = _repository.GetCharacter(id);
+        CharacterStatsModel stats = new CharacterStatsModel();
+        
+        stats.Health = character.Health;
+        stats.Mana = character.Mana;
+        stats.Stamina = character.Stamina;
+        
+        return Ok(stats);
+    }
     
 }
