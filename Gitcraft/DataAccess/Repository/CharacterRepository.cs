@@ -25,6 +25,9 @@ public class CharacterRepository : ICharacterRepository
 
     public Character GetCharacter(Guid id)
     {
-        return _context.Characters.Find(id)!;
+        var inventory = _context.Items.Where(x => x.CharacterId == id);
+        var character = _context.Characters.Where(x => x.Id == id).FirstOrDefault();
+        character.Inventory.Items = inventory.ToList();
+        return character;
     }
 }

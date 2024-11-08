@@ -11,18 +11,21 @@ namespace Gitcraft.Controllers;
 public class CharacterController : ControllerBase
 {
     private readonly ILogger<CharacterController> _logger;
-    private readonly ICharacterRepository _repository;
+    private readonly ICharacterRepository _characterRepository;
+    private readonly IInventoryRepository _inventoryRepository;
 
-    public CharacterController(ILogger<CharacterController> logger, ICharacterRepository repository)
+    public CharacterController(ILogger<CharacterController> logger, 
+        ICharacterRepository characterRepository, IInventoryRepository inventoryRepository)
     {
         _logger = logger;
-        _repository = repository;
+        _characterRepository = characterRepository;
+        _inventoryRepository = inventoryRepository;
     }
 
     [HttpPost("[action]")]
     public IActionResult Create(Character character)
     {
-        _repository.AddCharacter(character);
+        _characterRepository.AddCharacter(character);
         return Ok();
     }
 
@@ -30,7 +33,7 @@ public class CharacterController : ControllerBase
     [HttpGet("[action]")]
     public IActionResult GetCharacters()
     {
-        var characters = _repository.GetCharacters();
+        var characters = _characterRepository.GetCharacters();
         if (characters == null)
             _logger.Log(LogLevel.Error, "Characters not found");
         
@@ -41,14 +44,14 @@ public class CharacterController : ControllerBase
     [HttpGet("[action]")]
     public IActionResult GetCharacter(Guid id)
     {
-        var character = _repository.GetCharacter(id);
+        var character = _characterRepository.GetCharacter(id);
         return Ok(character);
     }
 
     [HttpGet("[action]")]
     public IActionResult GetCharacterStats(Guid id)
     {
-        Character character = _repository.GetCharacter(id);
+        Character character = _characterRepository.GetCharacter(id);
         CharacterStatsModel stats = new CharacterStatsModel();
         
         stats.Health = character.Health;
@@ -56,6 +59,13 @@ public class CharacterController : ControllerBase
         stats.Stamina = character.Stamina;
         
         return Ok(stats);
+    }
+
+    [HttpGet("[action]")]
+    public IActionResult GetInventory(Guid characterId)
+    {
+        Inventory inventory = _inventoryRepository.GetInventory(characterId);
+        return Ok(inventory);
     }
     
 }

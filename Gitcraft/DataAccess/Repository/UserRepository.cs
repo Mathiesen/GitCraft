@@ -1,5 +1,6 @@
 using Gitcraft.DataAccess.Repository.Interfaces;
 using Gitcraft.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gitcraft.DataAccess.Repository;
 
@@ -21,5 +22,12 @@ public class UserRepository : IUserRepository
     public User? GetUser(string username)
     {
         return _context.Users.FirstOrDefault(user => user.Username == username);
+    }
+
+    public User? GetUser(Guid userId)
+    {
+        return _context.Users
+            .Include(u => u.Characters)
+            .FirstOrDefault(user => user.Id == userId);
     }
 }

@@ -57,6 +57,7 @@ public class Program
         
         builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
         
         builder.Services.AddScoped<IAuthService, AuthService>();
 

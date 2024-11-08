@@ -1,5 +1,3 @@
-using System.Security.Cryptography;
-using System.Text;
 using Gitcraft.DataAccess.Repository.Interfaces;
 using Gitcraft.Entities;
 using Gitcraft.Services.Interfaces;
@@ -55,6 +53,15 @@ public class UserController : Controller
             return Ok();
         else
             return Unauthorized();
+    }
+
+    [HttpGet("[action]")]
+    public IActionResult GetUserCharacters(Guid userId)
+    {
+        var user = _userRepository.GetUser(userId);
+        var model = new UserModel();
+        model.Characters = user.Characters;
+        return Ok(model);
     }
     
 }
